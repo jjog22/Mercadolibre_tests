@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Cargando producto...</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: Arial, sans-serif;
+background-color: #f5f5f5;
+color: #333;
+}
+
+/* Definir color azulgris */
+:root {
+--azulgris: #6bb6ff;
+}
+
+/* 1. Franja amarilla delgada sin texto */
+.yellow-strip {
+background-color: #fff159;
+height: 4px;
+width: 100%;
+position: sticky;
+top: 0;
+z-index: 100;
+}
+
+.loading {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 200px;
+font-size: 18px;
+color: #3483fa;
+}
+
+.error {
+background: #ffebee;
+border: 1px solid #e57373;
+color: #c62828;
+padding: 15px;
+border-radius: 8px;
+margin: 20px;
+text-align: center;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+background: white;
+padding: 20px;
+display: none;
+}
+
+.container.loaded {
+display: block;
+}
+
+/* 4. Navigation container gris claro */
+.navigation-container {
+background: #f5f5f5;
+border: 1px solid #e6e6e6;
+padding: 12px 16px;
+margin: -20px -20px 20px -20px;
+}
+
+/* Breadcrumb con vender uno igual | compartir */
+.breadcrumb {
+color: #3483fa;
+font-size: 14px;
+margin-bottom: 8px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.breadcrumb a {
+color: #3483fa;
+text-decoration: none;
+}
+
+/* 2. También puede interesarte en texto negrita */
+.interest-section {
+font-size: 13px;
+color: #333;
+}
+
+.interest-title {
+font-weight: bold;
+display: inline;
+margin-right: 8px;
+}
+
+.interest-links {
+display: inline;
+color: #666;
+font-weight: bold;
+}
+
+/* Main Product Section */
+.product-main {
+display: flex;
+gap: 30px;
+margin-bottom: 40px;
+}
+
+/* Left Column - Images */
+.product-images {
+flex: 1;
+max-width: 400px;
+}
+
+.image-thumbnails {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 15px;
+width: 60px;
+float: left;
+margin-right: 15px;
+}
+
+.thumbnail {
+width: 50px;
+height: 50px;
+border: 2px solid #e6e6e6;
+border-radius: 4px;
+overflow: hidden;
+cursor: pointer;
+}
+
+.thumbnail.active {
+border-color: #3483fa;
+}
+
+.thumbnail img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.main-image {
+width: 100%;
+max-width: 350px;
+border-radius: 8px;
+position: relative;
+}
+
+.main-image img {
+width: 100%;
+height: auto;
+}
+
+/* Middle Column - Product Info */
+.product-info {
+flex: 2;
+max-width: 500px;
+}
+
+/* 3. Visita tienda oficial sin icono y más pequeño */
+.official-store-link {
+color: #3483fa;
+font-size: 13px;
+text-decoration: none;
+margin-bottom: 8px;
+display: inline-block;
+}
+
+.product-condition {
+color: #666;
+font-size: 14px;
+margin-bottom: 5px;
+}
+
+/* 5. Badges antes del título */
+.product-badges {
+display: flex;
+gap: 8px;
+margin-bottom: 8px;
+flex-wrap: wrap;
+}
+
+.badge-bestseller {
+background: #ff6600;
+color: white;
+padding: 2px 6px;
+font-size: 11px;
+border-radius: 2px;
+font-weight: bold;
+text-transform: uppercase;
+}
+
+.badge-ranking {
+background: white;
+color: #3483fa;
+border: 1px solid #3483fa;
+padding: 2px 6px;
+font-size: 11px;
+border-radius: 2px;
+}
+
+.product-title {
+font-size: 22px;
+font-weight: normal;
+color: #333;
+margin-bottom: 10px;
+line-height: 1.2;
+}
+
+.rating {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 15px;
+}
+
+.stars {
+color: #3483fa;
+font-size: 14px;
+}
+
+.price-section {
+margin-bottom: 20px;
+}
+
+.old-price {
+color: #999;
+text-decoration: line-through;
+font-size: 16px;
+}
+
+.price-container {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 4px;
+}
+
+.current-price {
+font-size: 32px;
+font-weight: normal;
+color: #333;
+margin: 5px 0;
+}
+
+.discount-badge {
+background: #00a650;
+color: white;
+padding: 2px 6px;
+font-size: 12px;
+border-radius: 2px;
+font-weight: bold;
+}
+
+.installments {
+color: #00a650;
+font-size: 14px;
+margin-bottom: 6px;
+}
+
+/* 7. Promoción OCA Blue Visa con fondo gris claro */
+.promotion-box {
+background: #f0f0f0;
+padding: 4px 8px;
+border-radius: 4px;
+margin-bottom: 8px;
+display: inline-block;
+}
+
+.promotion-text {
+color: #3483fa;
+font-size: 13px;
+font-weight: bold;
+}
+
+/* 9. Ver medios de pago más pequeño */
+.payment-link {
+color: #3483fa;
+text-decoration: none;
+font-size: 13px;
+margin-bottom: 16px;
+display: inline-block;
+}
+
+/* 12. Color selector con imagen */
+.color-selector {
+margin: 15px 0;
+}
+
+.color-label {
+font-weight: bold;
+margin-bottom: 8px;
+display: block;
+}
+
+.color-preview {
+width: 50px;
+height: 50px;
+border: 2px solid #e6e6e6;
+border-radius: 4px;
+overflow: hidden;
+cursor: pointer;
+}
+
+.color-preview img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+/* 10. Features más pequeñas */
+.product-features {
+margin-top: 30px;
+}
+
+.features-title {
+font-size: 14px;
+font-weight: bold;
+margin-bottom: 15px;
+}
+
+.features-list {
+list-style: none;
+}
+
+.features-list li {
+padding: 3px 0;
+font-size: 12px;
+color: #666;
+}
+
+.features-list li:before {
+content: "• ";
+color: #3483fa;
+font-weight: bold;
+}
+
+.view-characteristics {
+color: #3483fa;
+text-decoration: none;
+font-size: 13px;
+margin-top: 10px;
+display: inline-block;
+cursor: pointer;
+}
+
+/* Right Column - Purchase */
+.purchase-section {
+flex: 1;
+max-width: 300px;
+}
+
+/* 6. Cuadros blancos con borde gris claro */
+.shipping-info {
+background: white;
+border: 1px solid #e6e6e6;
+padding: 15px;
+border-radius: 8px;
+margin-bottom: 20px;
+}
+
+.stock-info {
+margin-bottom: 20px;
+}
+
+.stock-status {
+font-weight: bold;
+font-size: 14px;
+margin-bottom: 8px;
+}
+
+.quantity-selector {
+margin: 10px 0;
+}
+
+.btn-primary {
+background: #3483fa;
+color: white;
+border: none;
+padding: 12px 24px;
+border-radius: 6px;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+width: 100%;
+margin-bottom: 10px;
+}
+
+/* 8. Botones en azulgris */
+.btn-secondary {
+background: var(--azulgris);
+color: white;
+border: none;
+padding: 12px 24px;
+border-radius: 6px;
+font-size: 16px;
+cursor: pointer;
+width: 100%;
+margin-bottom: 16px;
+}
+
+/* 6. Seller info cuadro blanco con borde */
+.seller-info {
+margin-top: 20px;
+padding: 15px;
+border: 1px solid #e6e6e6;
+border-radius: 8px;
+background: white;
+}
+
+.btn-seller {
+background: var(--azulgris);
+color: white;
+border: none;
+padding: 10px 16px;
+border-radius: 6px;
+font-size: 13px;
+cursor: pointer;
+width: 100%;
+}
+
+/* 11. Barras claras excepto verde */
+.bar-red { background: #ffcdd2; }
+.bar-orange { background: #ffe0b2; }
+.bar-yellow { background: #fff9c4; }
+.bar-light-green { background: #dcedc8; }
+.bar-green { background: #4caf50; }
+
+/* Additional sections */
+.additional-section {
+background: white;
+border: 1px solid #e6e6e6;
+border-radius: 8px;
+padding: 15px;
+margin-top: 16px;
+}
+
+/* Related Products */
+.related-products {
+margin-top: 40px;
+}
+
+.section-title {
+font-size: 20px;
+font-weight: bold;
+color: #333;
+margin-bottom: 20px;
+}
+
+.products-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 20px;
+margin-bottom: 40px;
+}
+
+.product-card {
+border: 1px solid #e6e6e6;
+border-radius: 8px;
+padding: 15px;
+cursor: pointer;
+transition: box-shadow 0.2s;
+}
+
+.product-card:hover {
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+width: 100%;
+height: 180px;
+object-fit: contain;
+margin-bottom: 10px;
+}
+
+.product-card-title {
+font-size: 14px;
+color: #333;
+margin-bottom: 8px;
+line-height: 1.3;
+}
+
+.product-card-price {
+font-size: 18px;
+font-weight: bold;
+color: #333;
+margin-bottom: 5px;
+}
+
+.product-card-discount {
+color: #00a650;
+font-size: 12px;
+margin-bottom: 5px;
+}
+
+.product-card-shipping {
+color: #00a650;
+font-size: 12px;
+}
+
+/* 15. View more products link */
+.view-more-products {
+color: #3483fa;
+text-decoration: none;
+font-size: 14px;
+display: inline-block;
+margin-top: 16px;
+}
+
+/* 14. Product description */
+.product-description {
+margin-top: 40px;
+padding: 20px;
+background: #f9f9f9;
+border-radius: 8px;
+}
+
+.description-content {
+font-size: 14px;
+color: #666;
+line-height: 1.6;
+}
+
+/* Characteristics Section */
+.characteristics {
+margin-top: 40px;
+padding: 20px;
+background: #f9f9f9;
+border-radius: 8px;
+}
+
+.characteristics-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 15px;
+margin-top: 20px;
+}
+
+.characteristic-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px;
+background: white;
+border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+.product-main {
+flex-direction: column;
+}
+
+.container {
+padding: 10px;
+}
+
+.products-grid {
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+}
+</style>
+</head>
+<body>
+<!-- 1. Franja amarilla delgada sin texto -->
+<div class="yellow-strip"></div>
+
+<!-- Loading indicator -->
+<div id="loadingIndicator" class="loading">
+🔄 Cargando producto...
+</div>
+
+<!-- Error message -->
+<div id="errorMessage" class="error" style="display: none;">
+❌ Error cargando el producto. Verifica que la API esté ejecutándose.
+</div>
+
+<div class="container" id="mainContainer">
+<!-- 4. Navigation container gris claro -->
+<div class="navigation-container">
+<!-- 5. Breadcrumb con vender uno igual | compartir -->
+<nav class="breadcrumb" id="breadcrumb">
+<div>
+<a href="#">Volver al listado</a> |
+<span id="breadcrumbCategory">Cargando...</span> >
+<span id="breadcrumbSubcategory">...</span>
+</div>
+<div>
+<a href="#">Vender uno igual</a> |
+<a href="#">Compartir</a>
+</div>
+</nav>
+
+<!-- 2. También puede interesarte en texto negrita -->
+<div class="interest-section">
+<span class="interest-title">También puede interesarte:</span>
+<span class="interest-links" id="interestLinks">cargando productos relacionados...</span>
+</div>
+</div>
+
+<!-- Main Product Section -->
+<div class="product-main">
+<!-- Left Column - Images -->
+<div class="product-images">
+<div class="image-thumbnails" id="thumbnailContainer">
+<!-- Thumbnails will be loaded here -->
+</div>
+<div class="main-image">
+<img id="mainImage" src="" alt="Producto Principal">
+</div>
+</div>
+
+<!-- Middle Column - Product Info -->
+<div class="product-info">
+<!-- 3. Visita tienda oficial sin icono y más pequeño -->
+<a href="#" class="official-store-link" id="officialStoreLink">
+Visita la Tienda Oficial de <span id="storeName">Samsung</span>
+</a>
+
+<div class="product-condition" id="productCondition"></div>
+
+<!-- 5. Badges antes del título -->
+<div class="product-badges" id="productBadges">
+<!-- Badges will be loaded here -->
+</div>
+
+<h1 class="product-title" id="productTitle"></h1>
+
+<div class="rating" id="ratingSection">
+<span class="stars" id="starsDisplay"></span>
+<span id="ratingValue"></span>
+<span class="stars" id="reviewsCount"></span>
+</div>
+
+<div class="price-section">
+<div class="old-price" id="oldPrice" style="display: none;"></div>
+<div class="price-container">
+<div class="current-price" id="currentPrice"></div>
+<div class="discount-badge" id="discountBadge" style="display: none;"></div>
+</div>
+<div class="installments" id="installments">
+<span id="installmentText"></span>
+</div>
+<!-- 7. Promoción OCA Blue Visa -->
+<div class="promotion-box" id="promotionBox" style="display: none;">
+<span class="promotion-text" id="promotionText"></span>
+</div>
+</div>
+
+<!-- 9. Ver medios de pago más pequeño -->
+<a href="#" class="payment-link">Ver medios de pago y promociones</a>
+
+<!-- 12. Color selector con imagen -->
+<div class="color-selector" id="colorSelector">
+<span class="color-label">Color: <span id="selectedColor">Azul oscuro</span></span>
+<div class="color-preview" id="colorPreview">
+<img id="colorImage" src="" alt="Color seleccionado">
+</div>
+</div>
+
+<div class="product-features">
+<div class="features-title">Lo que tienes que saber de este producto</div>
+<ul class="features-list" id="featuresList">
+<!-- Features will be loaded here -->
+</ul>
+<!-- 13. Ver características con scroll -->
+<a href="#" class="view-characteristics" onclick="scrollToCharacteristics()">Ver características</a>
+</div>
+</div>
+
+<!-- Right Column - Purchase -->
+<div class="purchase-section">
+<!-- 9.1 Sección de envíos - cuadro blanco con borde -->
+<div class="shipping-info" id="shippingInfo">
+<div style="margin-bottom: 5px;">
+<span style="color: #00a650; font-weight: bold;">Envío gratis</span> 
+<span style="color: #333;">a todo el país</span>
+</div>
+<div style="color: #999; font-size: 13px; margin-bottom: 8px;">
+Conoce los tiempos y las formas de envío.<br>
+<a href="#" style="color: #3483fa; text-decoration: none;">Calcular cuándo llega</a>
+</div>
+</div>
+
+<div class="stock-info">
+<div class="stock-status">Stock disponible</div>
+<div class="quantity-selector">
+<label>Cantidad: <strong>1 unidad</strong> <span id="stockAvailable"></span></label>
+</div>
+</div>
+
+<button class="btn-primary">Comprar ahora</button>
+<button class="btn-secondary">Agregar al carrito</button>
+
+<!-- Info tienda pequeña y garantías -->
+<div style="margin: 16px 0; font-size: 13px; line-height: 1.4;">
+<div style="margin-bottom: 12px;">
+<span style="color: #333; font-size: 12px;">Tienda oficial</span>
+<span style="color: #3483fa; font-size: 12px; margin: 0 4px;" id="sellerNameSmall">Samsung</span>
+<span style="color: #666; font-size: 12px;" id="sellerSalesSmall">+5mil ventas</span>
+</div>
+
+<div style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px;">
+<span>🎁</span>
+<div>
+<span style="color: #3483fa; font-weight: bold;">Devolución gratis.</span>
+<span style="color: #666;"> Tienes 30 días desde que lo recibes.</span>
+</div>
+</div>
+
+<div style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px;">
+<span>🛡️</span>
+<div>
+<span style="color: #3483fa; font-weight: bold;">Compra Protegida.</span>
+<span style="color: #666;"> Recibe el producto que esperabas o te devolvemos tu dinero.</span>
+</div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 6px;">
+<span>📋</span>
+<div>
+<span style="color: #3483fa; font-weight: bold;">1 año de garantía de fábrica.</span>
+</div>
+</div>
+</div>
+
+<!-- 9.2 Sección del vendedor -->
+<div class="seller-info" id="sellerInfo">
+<!-- Seller info will be loaded here -->
+</div>
+
+<!-- 16. Otras opciones de compra -->
+<div class="additional-section">
+<h4 style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Otras opciones de compra</h4>
+<a href="#" style="color: #3483fa; text-decoration: none; font-size: 13px;">Ver 3 opciones desde U$S 439</a>
+</div>
+
+<!-- 16. Medios de pago -->
+<div class="additional-section">
+<h4 style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">Medios de pago</h4>
+
+<div style="background: #00a650; color: white; padding: 8px; border-radius: 4px; margin-bottom: 12px; text-align: center; font-size: 12px; font-weight: bold;">
+💳 Paga en hasta 12 cuotas sin interés!
+</div>
+
+<div style="margin-bottom: 12px;">
+<div style="font-weight: bold; margin-bottom: 4px;">Tarjetas de crédito</div>
+<div style="color: #666; font-size: 12px; margin-bottom: 8px;">¡Cuotas sin interés con bancos seleccionados!</div>
+<div style="display: flex; gap: 4px; margin-bottom: 8px;">
+<span style="background: #d32f2f; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: bold;">MC</span>
+<span style="background: #1565c0; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: bold;">VISA</span>
+<span style="background: #0277bd; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: bold;">AMEX</span>
+<span style="background: #f57f17; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: bold;">OCA</span>
+</div>
+</div>
+
+<div style="margin-bottom: 12px;">
+<div style="font-weight: bold; margin-bottom: 8px;">Tarjetas de débito</div>
+<div style="display: flex; gap: 4px; margin-bottom: 8px;">
+<span style="background: #1565c0; color: white; padding: 2px 8px; border-radius: 2px; font-size: 10px;">VISA</span>
+<span style="background: #d32f2f; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px;">MC</span>
+</div>
+</div>
+
+<div style="margin-bottom: 12px;">
+<div style="font-weight: bold; margin-bottom: 8px;">Efectivo</div>
+<div style="display: flex; gap: 4px;">
+<span style="background: #333; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px;">Abitab</span>
+<span style="background: #0066cc; color: white; padding: 2px 6px; border-radius: 2px; font-size: 10px;">RedPagos</span>
+</div>
+</div>
+
+<a href="#" style="color: #3483fa; font-size: 12px; text-decoration: none;">Conoce otros medios de pago</a>
+</div>
+</div>
+</div>
+
+<!-- Related Products -->
+<section class="related-products" id="relatedProductsSection">
+<h2 class="section-title">Productos relacionados</h2>
+<small>Promocionado</small>
+<div class="products-grid" id="relatedProducts">
+<!-- Related products will be loaded here -->
+</div>
+</section>
+
+<!-- Seller Products -->
+<section class="related-products" id="sellerProductsSection">
+<h2 class="section-title">Productos del vendedor</h2>
+<div class="products-grid" id="sellerProducts">
+<!-- Seller products will be loaded here -->
+</div>
+<!-- 15. Ver más productos del vendedor -->
+<a href="#" class="view-more-products" id="viewMoreProducts">Ver más productos de <span id="sellerNameLink">Samsung</span></a>
+</section>
+
+<!-- 14. Descripción del producto -->
+<section class="product-description">
+<h2 class="section-title">Descripción del producto</h2>
+<div class="description-content" id="productDescriptionContent">
+<!-- Description will be loaded here -->
+</div>
+</section>
+
+<!-- 13. Characteristics con ID para scroll -->
+<section class="characteristics" id="characteristicsSection">
+<h2 class="section-title">Características del producto</h2>
+<div class="characteristics-grid" id="characteristicsGrid">
+<!-- Characteristics will be loaded here -->
+</div>
+</section>
+</div>
+
+<script>
+// CÓDIGO ORIGINAL QUE FUNCIONABA
+
+// Configuración de la API
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// Variables globales
+let currentProductData = null;
+let currentImages = [];
+
+// Obtener ID del producto desde URL o usar producto por defecto
+function getProductIdFromUrl() {
+const urlParams = new URLSearchParams(window.location.search);
+return urlParams.get('id') || '1';
+}
+
+// Función principal para cargar un producto
+async function loadProduct(productId) {
+showLoading();
+hideError();
+
+try {
+console.log(`🔄 Cargando producto ID: ${productId}`);
+
+const response = await fetch(`${API_BASE_URL}/producto/${productId}`);
+
+if (!response.ok) {
+throw new Error(`Error HTTP: ${response.status}`);
+}
+
+const data = await response.json();
+console.log('✅ Datos recibidos:', data);
+
+currentProductData = data;
+
+// Cargar todos los componentes
+loadProductInfo(data.producto);
+loadSellerInfo(data.vendedor);
+loadRelatedProducts(data.productos_relacionados);
+loadSellerProducts(data.productos_vendedor);
+loadCharacteristics(data.producto.caracteristicas);
+// 2. Cargar productos de interés en texto
+loadInterestProducts(data.productos_relacionados.slice(0, 3));
+// 14. Cargar descripción
+loadProductDescription(data.producto.descripcion);
+
+// Actualizar URL sin recargar la página
+updateUrl(productId);
+
+hideLoading();
+showContainer();
+
+} catch (error) {
+console.error('❌ Error cargando producto:', error);
+hideLoading();
+showError();
+}
+}
+
+// 2. Cargar productos de interés como texto
+function loadInterestProducts(productos) {
+const container = document.getElementById('interestLinks');
+const productNames = productos.map(product => {
+return product.titulo.split(' ').slice(0, 2).join(' ').toLowerCase();
+});
+container.textContent = productNames.join(' • ');
+}
+
+// 14. Cargar descripción del producto
+function loadProductDescription(descripcion) {
+const container = document.getElementById('productDescriptionContent');
+container.innerHTML = descripcion.join('<br><br>');
+}
+
+// 13. Función para scroll a características
+function scrollToCharacteristics() {
+document.getElementById('characteristicsSection').scrollIntoView({
+behavior: 'smooth'
+});
+}
+
+// Cargar información básica del producto
+function loadProductInfo(producto) {
+// Título de la página
+document.getElementById('pageTitle').textContent = producto.titulo;
+document.title = producto.titulo;
+
+// Breadcrumb
+document.getElementById('breadcrumbCategory').textContent = producto.categoria;
+document.getElementById('breadcrumbSubcategory').textContent = producto.subcategoria;
+
+// Store name
+document.getElementById('storeName').textContent = currentProductData.vendedor.nombre;
+
+// Información básica
+document.getElementById('productCondition').textContent =
+`${producto.condicion} | +${producto.vendidos} vendidos`;
+
+// 5. Badges ANTES del título
+const badgesContainer = document.getElementById('productBadges');
+let badgesHtml = '';
+if (producto.mas_vendido) {
+badgesHtml += '<div class="badge-bestseller">MÁS VENDIDO</div>';
+}
+if (producto.posicion_categoria) {
+badgesHtml += `<div class="badge-ranking">${producto.posicion_categoria}° en ${producto.subcategoria}</div>`;
+}
+badgesContainer.innerHTML = badgesHtml;
+
+document.getElementById('productTitle').textContent = producto.titulo;
+
+// Rating
+const stars = '★'.repeat(Math.floor(producto.calificacion)) +
+'☆'.repeat(5 - Math.floor(producto.calificacion));
+document.getElementById('starsDisplay').textContent = stars;
+document.getElementById('ratingValue').textContent = producto.calificacion;
+document.getElementById('reviewsCount').textContent = `(${producto.numero_resenas})`;
+
+// Precios
+if (producto.precio_original && producto.precio_original !== producto.precio_actual) {
+document.getElementById('oldPrice').textContent = formatPrice(producto.precio_original);
+document.getElementById('oldPrice').style.display = 'block';
+}
+
+document.getElementById('currentPrice').textContent = formatPrice(producto.precio_actual);
+
+if (producto.descuento_porcentaje) {
+document.getElementById('discountBadge').textContent = `${producto.descuento_porcentaje}% OFF`;
+document.getElementById('discountBadge').style.display = 'block';
+}
+
+// Cuotas en verde
+if (producto.cuotas) {
+const cuotasText = `en ${producto.cuotas.cantidad} cuotas de ${formatPrice(producto.cuotas.valor_cuota)} sin interés`;
+document.getElementById('installmentText').textContent = cuotasText;
+}
+
+// 7. Promoción OCA Blue Visa
+document.getElementById('promotionBox').style.display = 'block';
+document.getElementById('promotionText').textContent = `${producto.descuento_porcentaje}% OFF con OCA Blue Visa`;
+
+// Stock
+document.getElementById('stockAvailable').textContent = `(+${producto.unidades_disponibles} disponibles)`;
+
+// Features (descripción)
+const featuresList = document.getElementById('featuresList');
+featuresList.innerHTML = producto.descripcion
+.map(desc => `<li>${desc}</li>`)
+.join('');
+
+// Imágenes
+loadProductImages(producto.imagenes);
+
+// 12. Color selector
+loadColorSelector(producto);
+
+// Actualizar nombres de vendedor
+if (document.getElementById('sellerNameSmall')) {
+document.getElementById('sellerNameSmall').textContent = currentProductData.vendedor.nombre;
+}
+if (document.getElementById('sellerNameLink')) {
+document.getElementById('sellerNameLink').textContent = currentProductData.vendedor.nombre;
+}
+if (document.getElementById('sellerSalesSmall')) {
+const ventas = Math.floor(currentProductData.vendedor.ventas_totales / 1000);
+document.getElementById('sellerSalesSmall').textContent = `+${ventas}mil ventas`;
+}
+}
+
+// 12. Cargar selector de color con imagen
+function loadColorSelector(producto) {
+const colors = producto.categoria.toLowerCase().includes('smartphone') || producto.categoria.toLowerCase().includes('celular') ?
+['negro', 'gris', 'blanco', 'azul', 'rosa'] :
+['blanco', 'negro'];
+
+const selectedColor = colors[Math.floor(Math.random() * colors.length)];
+document.getElementById('selectedColor').textContent = 
+selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1) + ' oscuro';
+
+// Usar segunda imagen como preview
+if (currentImages.length > 1) {
+document.getElementById('colorImage').src = currentImages[1];
+} else if (currentImages.length > 0) {
+document.getElementById('colorImage').src = currentImages[0];
+}
+}
+
+// Cargar imágenes del producto
+function loadProductImages(images) {
+currentImages = images;
+
+const thumbnailContainer = document.getElementById('thumbnailContainer');
+thumbnailContainer.innerHTML = images
+.map((img, index) => `
+<div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage(${index})">
+<img src="${img}" alt="Thumbnail ${index + 1}">
+</div>
+`).join('');
+
+// Establecer imagen principal
+document.getElementById('mainImage').src = images[0];
+}
+
+// 9.2 Cargar información del vendedor
+function loadSellerInfo(vendedor) {
+const sellerInfo = document.getElementById('sellerInfo');
+
+const totalProducts = Math.floor(Math.random() * 1000) + 100;
+const ventasFormateadas = Math.floor(vendedor.ventas_totales / 1000);
+
+sellerInfo.innerHTML = `
+<div style="background: #333; color: white; padding: 6px 12px; border-radius: 4px; margin-bottom: 12px; text-align: center; font-size: 12px; font-weight: bold;">
+Tienda Oficial
+</div>
+<div style="font-size: 16px; font-weight: bold; margin-bottom: 4px;">${vendedor.nombre}</div>
+<div style="color: #666; font-size: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+<span>🔵</span> Tienda oficial de Mercado Libre
+</div>
+<div style="margin-bottom: 12px;">
+<span style="font-weight: bold;">+${totalProducts}</span> 
+<span style="color: #666; font-size: 13px;">productos</span>
+</div>
+<div style="display: flex; justify-content: space-between; margin-bottom: 16px; height: 8px; gap: 2px;">
+<div class="bar-red" style="flex: 1; border-radius: 1px;"></div>
+<div class="bar-orange" style="flex: 1; border-radius: 1px;"></div>
+<div class="bar-yellow" style="flex: 1; border-radius: 1px;"></div>
+<div class="bar-light-green" style="flex: 1; border-radius: 1px;"></div>
+<div class="bar-green" style="flex: 1; border-radius: 1px;"></div>
+</div>
+<div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 11px;">
+<div style="text-align: center; flex: 1;">
+<div style="font-size: 14px; margin-bottom: 2px;">📊</div>
+<div style="font-weight: bold; margin-bottom: 2px;">+${ventasFormateadas}mil</div>
+<div style="color: #666; line-height: 1.2;">Ventas<br>concretadas</div>
+</div>
+<div style="text-align: center; flex: 1;">
+<div style="font-size: 14px; margin-bottom: 2px;">👥</div>
+<div style="font-weight: bold; margin-bottom: 2px;"></div>
+<div style="color: #666; line-height: 1.2;">Brinda buena<br>atención</div>
+</div>
+<div style="text-align: center; flex: 1;">
+<div style="font-size: 14px; margin-bottom: 2px;">⏰</div>
+<div style="font-weight: bold; margin-bottom: 2px;"></div>
+<div style="color: #666; line-height: 1.2;">Entrega sus productos<br>a tiempo</div>
+</div>
+</div>
+<button class="btn-seller" onclick="goToSellerPage(${vendedor.id})">
+Ir a la tienda oficial
+</button>
+`;
+}
+
+// Cargar productos relacionados
+function loadRelatedProducts(productos) {
+const container = document.getElementById('relatedProducts');
+container.innerHTML = productos.map(product => createProductCard(product)).join('');
+}
+
+// Cargar productos del vendedor
+function loadSellerProducts(productos) {
+const container = document.getElementById('sellerProducts');
+container.innerHTML = productos.map(product => createProductCard(product)).join('');
+}
+
+// Crear tarjeta de producto
+function createProductCard(product) {
+const discountHtml = product.descuento_porcentaje ?
+`<div class="product-card-discount">${product.descuento_porcentaje}% OFF</div>` : '';
+const oldPriceHtml = (product.precio_original && product.precio_original !== product.precio_actual) ?
+`<div style="color: #999; text-decoration: line-through; font-size: 14px;">${formatPrice(product.precio_original)}</div>` : '';
+const shippingText = product.envio_gratis ? 'Envío gratis' : 'Envío con costo';
+
+return `
+<div class="product-card" onclick="loadProduct(${product.id})">
+<img src="${product.imagenes[0]}" alt="${product.titulo}">
+<div class="product-card-title">${product.titulo}</div>
+${oldPriceHtml}
+<div class="product-card-price">${formatPrice(product.precio_actual)}</div>
+${discountHtml}
+<div class="product-card-shipping">${shippingText}</div>
+</div>
+`;
+}
+
+// Cargar características
+function loadCharacteristics(caracteristicas) {
+const characteristicsGrid = document.getElementById('characteristicsGrid');
+
+const items = Object.entries(caracteristicas).map(([key, value]) => `
+<div class="characteristic-item">
+<div>
+<strong>${key}:</strong> ${value}
+</div>
+</div>
+`).join('');
+
+characteristicsGrid.innerHTML = items;
+}
+
+// Funciones de utilidad
+function formatPrice(price) {
+return `$ ${price.toLocaleString('es-CO')}`;
+}
+
+function changeMainImage(index) {
+const thumbnails = document.querySelectorAll('.thumbnail');
+thumbnails.forEach(thumb => thumb.classList.remove('active'));
+thumbnails[index].classList.add('active');
+
+document.getElementById('mainImage').src = currentImages[index];
+}
+
+function updateUrl(productId) {
+const newUrl = `${window.location.pathname}?id=${productId}`;
+window.history.pushState({ productId }, '', newUrl);
+}
+
+// Funciones de UI
+function showLoading() {
+document.getElementById('loadingIndicator').style.display = 'flex';
+document.getElementById('mainContainer').classList.remove('loaded');
+}
+
+function hideLoading() {
+document.getElementById('loadingIndicator').style.display = 'none';
+}
+
+function showError() {
+document.getElementById('errorMessage').style.display = 'block';
+}
+
+function hideError() {
+document.getElementById('errorMessage').style.display = 'none';
+}
+
+function showContainer() {
+document.getElementById('mainContainer').classList.add('loaded');
+}
+
+function goToSellerPage(sellerId) {
+alert(`Funcionalidad de página del vendedor (ID: ${sellerId}) - Por implementar`);
+}
+
+// Manejar navegación del navegador
+window.addEventListener('popstate', function(event) {
+const productId = getProductIdFromUrl();
+loadProduct(productId);
+});
+
+// Función para testing - cambiar producto fácilmente
+function testLoadProduct(id) {
+loadProduct(id);
+}
+
+// Inicializar cuando se carga la página
+document.addEventListener('DOMContentLoaded', function() {
+const productId = getProductIdFromUrl();
+console.log(`🚀 Iniciando página con producto ID: ${productId}`);
+loadProduct(productId);
+});
+
+// Exponer funciones globalmente para debugging
+window.loadProduct = loadProduct;
+window.testLoadProduct = testLoadProduct;
+
+console.log('💡 Para testing en consola:');
+console.log(' - testLoadProduct(2) // Cargar producto ID 2');
+console.log(' - loadProduct(3) // Cargar producto ID 3');
+</script>
+</body>
+</html>
